@@ -73,5 +73,5 @@ export class Dependency extends vscode.TreeItem {
     dark: path.join(__filename, "..", "..", "resources", "dark", "logo.png"),
   };
 
-  contextValue = "dependency";
+  // contextValue = "dependency";
 }
