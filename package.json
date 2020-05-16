@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:todo.helloWorld"
+    "onView:todoView"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,8 +19,16 @@
         "command": "todo.helloWorld",
         "title": "Hello World",
         "icon": {
-          "light": "resources/logo.png",
-          "dark": "resources/logo.png"
+          "light": "resources/dark/logo.png",
+          "dark": "resources/dark/logo.png"
+        }
+      },
+      {
+        "command": "todoView.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
         }
       }
     ],
@@ -37,7 +45,7 @@
         {
           "id": "package-explorer",
           "title": "Package Explorer",
-          "icon": "resources/logo.png"
+          "icon": "resources/dark/logo.png"
         }
       ]
     }

@@ -18,7 +18,11 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage("Hello World from ToDo!");
   });
 
-  vscode.window.registerTreeDataProvider("todoView", new ToDoProvider());
+  const todoProvider = new ToDoProvider();
+  vscode.window.registerTreeDataProvider("todoView", todoProvider);
+  vscode.commands.registerCommand("todoView.refreshEntry", () =>
+    todoProvider.refresh()
+  );
 
   context.subscriptions.push(disposable);
 }
