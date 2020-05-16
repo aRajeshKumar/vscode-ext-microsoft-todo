@@ -69,8 +69,8 @@ export class Dependency extends vscode.TreeItem {
     super(groupName, collapsibleState);
   }
   iconPath = {
-    light: path.join(__filename, "..", "..", "src", "resources", "logo.png"),
-    dark: path.join(__filename, "..", "..", "Src", "resources", "logo.png"),
+    light: path.join(__filename, "..", "..", "resources", "logo.png"),
+    dark: path.join(__filename, "..", "..", "resources", "logo.png"),
   };
 
   contextValue = "dependency";
