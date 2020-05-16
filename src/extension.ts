@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { ToDoProvider, Dependency } from "./ToDoProvider";
-import { ToDoExplorer } from "./ToDoExplorer";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -19,10 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage("Hello World from ToDo!");
   });
 
-  //vscode.window.registerTreeDataProvider("todoView", new ToDoProvider());
-  vscode.window.createTreeView("todoView", {
-    treeDataProvider: new ToDoProvider(),
-  });
+  vscode.window.registerTreeDataProvider("todoView", new ToDoProvider());
 
   context.subscriptions.push(disposable);
 }

@@ -19,8 +19,8 @@
         "command": "todo.helloWorld",
         "title": "Hello World",
         "icon": {
-          "light": "src/resources/logo.png",
-          "dark": "src/resources/logo.png"
+          "light": "resources/logo.png",
+          "dark": "resources/logo.png"
         }
       }
     ],
@@ -37,7 +37,7 @@
         {
           "id": "package-explorer",
           "title": "Package Explorer",
-          "icon": "src/resources/logo.png"
+          "icon": "resources/logo.png"
         }
       ]
     }
