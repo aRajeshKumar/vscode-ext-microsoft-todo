@@ -20,9 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   const todoProvider = new ToDoProvider();
   vscode.window.registerTreeDataProvider("todoView", todoProvider);
-  vscode.commands.registerCommand("todoView.refreshEntry", () =>
-    todoProvider.refresh()
-  );
+  //vscode.commands.registerCommand("todoView.refreshEntry", () =>
+  //  todoProvider.refresh()
+  //);
 
   context.subscriptions.push(disposable);
 }
