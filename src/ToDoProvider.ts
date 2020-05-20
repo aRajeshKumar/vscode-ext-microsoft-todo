@@ -109,7 +109,6 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoItem> {
       .catch(this.handleListsError);
   }
 
-  // TODO: Something for chakresh
   handleListsResponse = (response: axios.AxiosResponse) => {
     response.data.value.forEach((element: any) => {
       var listItem = new ToDoItem(
