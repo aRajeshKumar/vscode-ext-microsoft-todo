@@ -6,18 +6,27 @@
   "engines": {
     "vscode": "^1.45.0"
   },
+  "typings": "out/index",
   "categories": [
     "Other"
   ],
   "activationEvents": [
     "onView:todoView"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/extension",
   "contributes": {
     "commands": [
       {
         "command": "todo.helloWorld",
         "title": "Hello World",
+        "icon": {
+          "light": "resources/dark/logo.png",
+          "dark": "resources/dark/logo.png"
+        }
+      },
+      {
+        "command": "todo.addTask",
+        "title": "Add task",
         "icon": {
           "light": "resources/dark/logo.png",
           "dark": "resources/dark/logo.png"
@@ -32,6 +41,15 @@
         }
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "todoView.refreshEntry",
+          "when": "view == todoView",
+          "group": "navigation"
+        }
+      ]
+    },
     "views": {
       "package-explorer": [
         {
@@ -72,6 +90,10 @@
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "@types/lodash": "^4.14.158",
+    "@types/uuid": "^8.0.0",
+    "axios": "^0.19.2",
+    "lodash": "^4.17.19",
+    "request": "^2.88.2"
   }
 }
