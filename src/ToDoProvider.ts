@@ -8,7 +8,8 @@ import { APIs } from './config/graphAPIs'
 import { httpClient } from './common/httpClient'
 
 export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
-    private toDoTaskFloderLists: ToDoTaskFolder[] = [];
+    public static toDoTaskFloderLists: ToDoTaskFolder[] = [];
+    public static folderList : ToDoTaskFolder[] = [];
     private isRefreshing: boolean = false;
 
     private accessToken = process.env.ACCESS_TOKEN || accessToken;
@@ -16,12 +17,17 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
     private _onDidChangeTreeData: vscode.EventEmitter<ToDoTaskFolder | null | undefined | void> = new vscode.EventEmitter(); // Here your types do not include undefined.
     readonly onDidChangeTreeData?: vscode.Event<ToDoTaskFolder | undefined | null | void> = this._onDidChangeTreeData.event; // Here you specify ToDoItem | undefined | null as the types for the generic
 
-    refresh(): void {
-        this._onDidChangeTreeData.fire(null);
+    public refresh(): void {
+        /*
+            If not clearing the folder list. the refresh will throw an error.
+        */
+        ToDoProvider.toDoTaskFloderLists = [];
+        ToDoProvider.folderList = [];
+        this._onDidChangeTreeData.fire();
     }
 
     refreshList(): void {
-        this._onDidChangeTreeData.fire(null);
+        this._onDidChangeTreeData.fire();
     }
 
     getTreeItem(element: ToDoTaskFolder): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -35,13 +41,12 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
 
         if (element === undefined) {
             await this.getAllTaskFolders();
-            let folderList: ToDoTaskFolder[] = [];
-            this.toDoTaskFloderLists.forEach((element: any) => {
+            ToDoProvider.toDoTaskFloderLists.forEach((element: any) => {
                 let folderItem: ToDoTaskFolder = new ToDoTaskFolder(element.id ? element.id : "", element.displayName ? element.displayName : "", vscode.TreeItemCollapsibleState.Collapsed);
-                folderList.push(folderItem);
+                ToDoProvider.folderList.push(folderItem);
             });
-            await this.__setTasksOfAllFoldersAsChildren(folderList);
-            return Promise.resolve(folderList);
+            await this.__setTasksOfAllFoldersAsChildren();
+            return Promise.resolve(ToDoProvider.folderList);
         } else {
             if (!element.children.length)
                 vscode.window.showInformationMessage("No tasks to show....");
@@ -49,13 +54,23 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
         }
     }
 
-    private __setTasksOfAllFoldersAsChildren(folderLists: ToDoTaskFolder[]): Promise<void> {
+    public getFolderList(folderName: string): any {
+        for (let i = 0; i < ToDoProvider.toDoTaskFloderLists.length; i++) {
+            if (ToDoProvider.toDoTaskFloderLists[i].name == folderName) {
+                return ToDoProvider.toDoTaskFloderLists[i];
+            }
+        }
+        vscode.window.showErrorMessage("Folder not found in " + folderName);
+        return new Error("Folder not found");
+    }
+
+    private __setTasksOfAllFoldersAsChildren(): Promise<void> {
         let findTasksList: any[] = [];
 
         // create an array of promises for promise.all call. we want 
         // to fetch the tasks from folders in parallel to improve the perf.
-        for (let i = 0; i < folderLists.length; i++) {
-            let folderId: string = folderLists[i].id || "";
+        for (let i = 0; i < ToDoProvider.folderList.length; i++) {
+            let folderId: string = ToDoProvider.folderList[i].id || "";
             if (folderId && folderId.length > 0)
                 findTasksList.push(this.__getTasksFromFolderId(folderId));
         }
@@ -66,20 +81,20 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
                     if (!responseArray || !responseArray.length)
                         return resolve();
                     for (let i = 0; i < responseArray.length; i++) {
-                        if (!_.get(responseArray[i], 'err')     
-                            && _.get(responseArray[i], 'result') 
-                            && _.get(responseArray[i], 'result.data') 
+                        if (!_.get(responseArray[i], 'err')
+                            && _.get(responseArray[i], 'result')
+                            && _.get(responseArray[i], 'result.data')
                             && _.get(responseArray[i], 'result.data.value').length > 0) {
                             let tasksList: any[] = _.get(responseArray[i], 'result.data.value');
                             for (let j = 0; j < tasksList.length; j++) {
                                 let task: ToDoTaskFolder = new ToDoTaskFolder(tasksList[j].id, tasksList[j].title, vscode.TreeItemCollapsibleState.None);
-                                folderLists[i].children.push(task);
+                                ToDoProvider.folderList[i].children.push(task);
                             }
                         }
                     }
                     return resolve();
                 })
-                .catch((err) => { return resolve()})
+                .catch((err) => { return resolve() })
         })
     }
 
@@ -129,7 +144,7 @@ export class ToDoProvider implements vscode.TreeDataProvider<ToDoTaskFolder> {
         if (apiResult.err) {
             this.handleListsError(apiResult.err);
         } else {
-            this.toDoTaskFloderLists = apiResult.response &&
+            ToDoProvider.toDoTaskFloderLists = apiResult.response &&
                 apiResult.response.data &&
                 apiResult.response.data.value || [];
         }
@@ -160,9 +175,9 @@ export class ToDoTaskFolder extends vscode.TreeItem {
     public lastModifiedDateTime: Date | undefined;
     public wellknownListName: string | undefined;
     public children: ToDoTaskFolder[];
-    public collapsibleState : vscode.TreeItemCollapsibleState | vscode.TreeItemCollapsibleState.Collapsed
+    public collapsibleState: vscode.TreeItemCollapsibleState | vscode.TreeItemCollapsibleState.Collapsed
 
-    constructor(id: string, name: string, collapseState : vscode.TreeItemCollapsibleState) {
+    constructor(id: string, name: string, collapseState: vscode.TreeItemCollapsibleState) {
         super(name);
         this.id = id;
         this.name = name;

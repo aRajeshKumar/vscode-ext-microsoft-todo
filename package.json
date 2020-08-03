@@ -25,6 +25,14 @@
         }
       },
       {
+        "command": "todo.addTask",
+        "title": "Add task",
+        "icon": {
+          "light": "resources/dark/logo.png",
+          "dark": "resources/dark/logo.png"
+        }
+      },
+      {
         "command": "todoView.refreshEntry",
         "title": "Refresh",
         "icon": {
@@ -33,6 +41,15 @@
         }
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "todoView.refreshEntry",
+          "when": "view == todoView",
+          "group": "navigation"
+        }
+      ]
+    },
     "views": {
       "package-explorer": [
         {
@@ -74,6 +91,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.158",
+    "@types/uuid": "^8.0.0",
     "axios": "^0.19.2",
     "lodash": "^4.17.19",
     "request": "^2.88.2"
